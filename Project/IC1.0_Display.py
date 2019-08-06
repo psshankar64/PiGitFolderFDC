@@ -36,7 +36,7 @@ pygame.init()
 CLOCK = pygame.time.Clock() # *** NOT COVERED IN THE VIDEO ***
 
 ''' DISPLAY SETUP -------------------------------------------------------------------------------- DISPLAY SETUP '''
-DISPLAY_WIDTH = 800
+DISPLAY_WIDTH = 940
 DISPLAY_HEIGHT = 480
 DW_HALF = DISPLAY_WIDTH // 2
 DH_HALF = DISPLAY_HEIGHT // 2
@@ -45,12 +45,12 @@ DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN)
 
 ''' LOAD IMAGES ---------------------------------------------------------------------------------- LOAD IMAGES '''
 Needle_org = pygame.image.load('./images/needle.png')
-Gauge = pygame.image.load('./images/CGaugeBlk.png')
+Gauge_org = pygame.image.load('./images/CGaugeBlk.png')
 Circle_org = pygame.image.load('./images/circle2.jpg')
 
 
-#Gauge = pygame.transform.scale(Gauge_org, (340,260))
-Needle = pygame.transform.scale(Needle_org, (260,360))
+Gauge = pygame.transform.scale(Gauge_org, (640,460))
+Needle = pygame.transform.scale(Needle_org, (260,460))
 Circle = pygame.transform.scale(Circle_org, (340, 260))
 ''' FUNCTIONS ------------------------------------------------------------------------------------ FUNCTIONS '''
 def event_handler():
@@ -111,8 +111,8 @@ def display_text_NC(text, x_cord, y_cord, size):
 # set the starting rotation of the image in degrees 
 direction = 1;
 raw_value = degrees * 0.8
-MenuStart_X = DW_HALF + 80
-MenuStart_Y = 260
+MenuStart_X = DW_HALF + 100
+MenuStart_Y = 280
 Y_MenuSpace = 25
 
 ''' MAIN LOOP ------------------------------------------------------------------------------------ MAIN LOOP '''
@@ -122,9 +122,9 @@ while True:
 
         #Place the Gauge first (and any other fixed shapes)
         RECT = Gauge.get_rect()        
-        DS.blit(Gauge, (DW_HALF - RECT.center[0] - 170, DH_HALF - RECT.center[1]))
+        DS.blit(Gauge, (DW_HALF - RECT.center[0] - 230, DH_HALF - RECT.center[1]))
         pygame.draw.rect(DS, GREEN, (DW_HALF + 190, 173, 100, 30), 0)
-        pygame.draw.rect(DS, SILVER, (DW_HALF + 65, 235, 280, 220), 5)
+        pygame.draw.rect(DS, SILVER, (DW_HALF + 85, 255, 280, 220), 5)
 
         #Place all the fixed texts here
         display_text('RPM', DW_HALF+100, 50, 30)
@@ -135,7 +135,7 @@ while True:
         
 
         #and then show the changed position of the needle
-        rotate_and_center(DS, DW_HALF - 170, DH_HALF, Needle, degrees)
+        rotate_and_center(DS, DW_HALF - 230, DH_HALF, Needle, degrees)
 
 	#The degrees as of now is the global variable 
         raw_value = float(((145 - degrees) * 28)/1000)
