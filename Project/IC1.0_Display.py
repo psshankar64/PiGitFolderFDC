@@ -33,7 +33,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 '''Goabls We should not use it but for experiments we still keep this'''
-degrees = 145;
+degrees = 149;
 FUELX = 100;
 FUELCOLOR = GREEN;
 FUELPERCVALUE = 100;
@@ -74,24 +74,24 @@ def event_handler():
                 if event.type == QUIT or (event.type == KEYDOWN and event.key == K_LEFT):
                         #global degrees
                         degrees += 1
-                        if degrees > 145:
-                                degrees = 145
+                        if degrees > 149:
+                                degrees = 149
 
                 if event.type == QUIT or (event.type == KEYDOWN and event.key == K_RIGHT):
                         #global degrees
                         degrees -= 1
-                        if degrees < -145:
-                                degrees = -145
+                        if degrees < -149:
+                                degrees = -149
 
                 if (event.type == pygame.KEYDOWN and event.key == pygame.K_4):
                         if(FUELX > 0):
-                                FUELX -= 10
-                                FUELPERCVALUE -= 10
+                                FUELX -= 2
+                                FUELPERCVALUE -= 2
 
                 if (event.type == pygame.KEYDOWN and event.key == pygame.K_6):
                         if(FUELX < 100):
-                                FUELX += 10
-                                FUELPERCVALUE += 10
+                                FUELX += 2
+                                FUELPERCVALUE += 2
                                 
 def rotate_and_center(ds, x, y, image, degrees):
 # this function rotates an image and then centralises so that the rotation is uniform
@@ -168,7 +168,7 @@ while True:
         rotate_and_center(DS, DW_HALF - 230, DH_HALF, Needle, degrees)
 
 	#The degrees as of now is the global variable 
-        raw_value = float(((145 - degrees) * 28)/1000)
+        raw_value = float(((149 - degrees) * 28)/1000)
 
         display_text(str(round(raw_value, 2)), DW_HALF+100, 100, 60)
         display_text("123456", DW_HALF+270, 100, 50)
