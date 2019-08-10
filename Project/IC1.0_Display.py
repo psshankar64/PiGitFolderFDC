@@ -31,7 +31,6 @@ NAVY = (0, 0, 128)
 AQUA = (0, 255, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-ListItemColor = (255, 0, 0)
 ListItemColor1 = WHITE
 ListItemColor2 = GRAY
 ListItemColor3 = GRAY
