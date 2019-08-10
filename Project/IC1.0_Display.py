@@ -31,6 +31,13 @@ NAVY = (0, 0, 128)
 AQUA = (0, 255, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+ListItemColor = (255, 0, 0)
+ListItemColor1 = WHITE
+ListItemColor2 = GRAY
+ListItemColor3 = GRAY
+ListItemColor4 = GRAY
+ListItemColor5 = GRAY
+ListItemColor6 = GRAY
 
 '''Goabls We should not use it but for experiments we still keep this'''
 degrees = 149;
@@ -38,6 +45,9 @@ FUELX = 100;
 FUELCOLOR = GREEN;
 FUELPERCVALUE = 100;
 SELECTED = 1;
+MenuItemNumber = 1
+itemTextSize = 25
+itemSelectedSize = 35
 
 pygame.init()
 CLOCK = pygame.time.Clock() # *** NOT COVERED IN THE VIDEO ***
@@ -48,7 +58,7 @@ DISPLAY_HEIGHT = 480
 DW_HALF = DISPLAY_WIDTH // 2
 DH_HALF = DISPLAY_HEIGHT // 2
 DISPLAY_AREA = DISPLAY_WIDTH * DISPLAY_HEIGHT
-DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN)
+DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.NOFRAME)
 
 ''' LOAD IMAGES ---------------------------------------------------------------------------------- LOAD IMAGES '''
 Needle_org = pygame.image.load('./images/needle.png')
@@ -65,6 +75,7 @@ def event_handler():
         global degrees
         global FUELX
         global FUELPERCVALUE
+        global MenuItemNumber
         
         for event in pygame.event.get():
                 if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -92,6 +103,15 @@ def event_handler():
                         if(FUELX < 100):
                                 FUELX += 2
                                 FUELPERCVALUE += 2
+
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN and MenuItemNumber <= 6):
+                        MenuItemNumber += 1
+                        print(MenuItemNumber)
+
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP and MenuItemNumber >= 1):
+                        MenuItemNumber -= 1
+                        print(MenuItemNumber)
+                        
                                 
 def rotate_and_center(ds, x, y, image, degrees):
 # this function rotates an image and then centralises so that the rotation is uniform
@@ -122,12 +142,19 @@ def display_text(text, x_cord, y_cord, size):
         DS.blit(textSurf, textRect)
         return textSurf
 
-def display_text_NC(text, x_cord, y_cord, size):
+def display_text_NC(text, x_cord, y_cord, size, ListItemColor):
         texttype = pygame.font.Font('Light.ttf', size)
-        textSurf = texttype.render(text, 1, (255, 255, 255))
+        textSurf = texttype.render(text, 1, ListItemColor)
         textRect = textSurf.get_rect()
         textRect.topleft = (x_cord, y_cord)
-        DS.blit(textSurf, textRect)  
+        DS.blit(textSurf, textRect)
+
+# Text Renderer
+def text_format(message, textFont, textSize, textColor):
+    newFont=pygame.font.Font(textFont, textSize)
+    newText=newFont.render(message, 0, textColor)
+
+    return newText
 	
 ''' SETUP VARIABLES ------------------------------------------------------------------------------ SETUP VARIABLES '''
 # set the starting rotation of the image in degrees 
@@ -173,12 +200,61 @@ while True:
         display_text(str(round(raw_value, 2)), DW_HALF+100, 100, 60)
         display_text("123456", DW_HALF+270, 100, 50)
 
-        display_text_NC("Menu item One", MenuStart_X, MenuStart_Y, 25)
-        display_text_NC("Menu item Two", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25)
-        display_text_NC("Menu item Three", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25)
-        display_text_NC("Menu item Four", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25)
-        display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25)
-        display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25)
+        if(MenuItemNumber == 1):
+                ListItemColor1 = WHITE
+                ListItemColor2 = GRAY
+                ListItemColor3 = GRAY
+                ListItemColor4 = GRAY
+                ListItemColor5 = GRAY
+                ListItemColor6 = GRAY
+
+        if(MenuItemNumber == 2):
+                ListItemColor1 = GRAY
+                ListItemColor2 = WHITE
+                ListItemColor3 = GRAY
+                ListItemColor4 = GRAY
+                ListItemColor5 = GRAY
+                ListItemColor6 = GRAY
+
+        if(MenuItemNumber == 3):
+                ListItemColor1 = GRAY
+                ListItemColor2 = GRAY
+                ListItemColor3 = WHITE
+                ListItemColor4 = GRAY
+                ListItemColor5 = GRAY
+                ListItemColor6 = GRAY
+
+        if(MenuItemNumber == 4):
+                ListItemColor1 = GRAY
+                ListItemColor2 = GRAY
+                ListItemColor3 = GRAY
+                ListItemColor4 = WHITE
+                ListItemColor5 = GRAY
+                ListItemColor6 = GRAY
+
+        if(MenuItemNumber == 5):
+                ListItemColor1 = GRAY
+                ListItemColor2 = GRAY
+                ListItemColor3 = GRAY
+                ListItemColor4 = GRAY
+                ListItemColor5 = WHITE
+                ListItemColor6 = GRAY
+
+        if(MenuItemNumber == 6):
+                ListItemColor1 = GRAY
+                ListItemColor2 = GRAY
+                ListItemColor3 = GRAY
+                ListItemColor4 = GRAY
+                ListItemColor5 = GRAY
+                ListItemColor6 = WHITE
+                        
+
+        display_text_NC("Menu item One", MenuStart_X, MenuStart_Y, 25, ListItemColor1)
+        display_text_NC("Menu item Two", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25, ListItemColor2)
+        display_text_NC("Menu item Three", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25, ListItemColor3)
+        display_text_NC("Menu item Four", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25, ListItemColor4)
+        display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25, ListItemColor5)
+        display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25, ListItemColor6)
 
         #The tick in the bracket will tell the maximum frames per second. Lower number means slower speed. Its not a delay func
         CLOCK.tick(60) 
