@@ -58,7 +58,7 @@ DISPLAY_HEIGHT = 480
 DW_HALF = DISPLAY_WIDTH // 2
 DH_HALF = DISPLAY_HEIGHT // 2
 DISPLAY_AREA = DISPLAY_WIDTH * DISPLAY_HEIGHT
-DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.NOFRAME)
+DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN)
 
 ''' LOAD IMAGES ---------------------------------------------------------------------------------- LOAD IMAGES '''
 Needle_org = pygame.image.load('./images/needle.png')
@@ -106,12 +106,9 @@ def event_handler():
 
                 if (event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN and MenuItemNumber <= 6):
                         MenuItemNumber += 1
-                        print(MenuItemNumber)
 
                 if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP and MenuItemNumber >= 1):
-                        MenuItemNumber -= 1
-                        print(MenuItemNumber)
-                        
+                        MenuItemNumber -= 1                        
                                 
 def rotate_and_center(ds, x, y, image, degrees):
 # this function rotates an image and then centralises so that the rotation is uniform
