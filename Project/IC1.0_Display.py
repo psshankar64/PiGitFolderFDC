@@ -5,12 +5,14 @@ This script loads an images and rotates it in the center of the display surface
 import sys
 import random
 import math
+import time
 
 import pygame
 import pygame.gfxdraw
 from pygame.locals import *
 
 #Define some standard colors
+BootUp = True
 FUCHSIA = (255, 0, 255)
 PURPLE = (128, 0, 128)
 TEAL = (0, 128, 128)
@@ -63,13 +65,25 @@ DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN)
 Needle_org = pygame.image.load('./images/needle.png')
 Gauge_org = pygame.image.load('./images/CGaugeBlk.png')
 Circle_org = pygame.image.load('./images/circle2.jpg')
+StartUp_org = pygame.image.load('./images/logo.png')
 
 
 Gauge = pygame.transform.scale(Gauge_org, (640,460))
 Needle = pygame.transform.scale(Needle_org, (260,460))
 Circle = pygame.transform.scale(Circle_org, (340, 260))
+StartUp = pygame.transform.scale(StartUp_org, (640, 460))
+
 
 ''' FUNCTIONS ------------------------------------------------------------------------------------ FUNCTIONS '''
+
+def display_logo():
+        global BootUp
+        
+        DS.blit(StartUp, (150, 30))
+        pygame.display.update()
+        time.sleep(10)
+        BootUp = False        
+
 def event_handler():
         global degrees
         global FUELX
@@ -162,6 +176,10 @@ Y_MenuSpace = 25
 
 ''' MAIN LOOP ------------------------------------------------------------------------------------ MAIN LOOP '''
 while True:
+
+        while BootUp is True:
+                display_logo()
+                                
         #Event handling currently handles ESC or any other keypress. This is a polling mechanism
         event_handler()
 
