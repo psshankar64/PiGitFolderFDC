@@ -33,6 +33,10 @@ NAVY = (0, 0, 128)
 AQUA = (0, 255, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+MenuNum = 1
+MENULISTCOLOR = (64, 64, 64)
+
+
 ListItemColor1 = WHITE
 ListItemColor2 = GRAY
 ListItemColor3 = GRAY
@@ -88,6 +92,7 @@ def event_handler():
         global degrees
         global FUELX
         global FUELPERCVALUE
+        global MenuNum
         global MenuItemNumber
         
         for event in pygame.event.get():
@@ -95,13 +100,13 @@ def event_handler():
                         pygame.quit()
                         sys.exit()
                         
-                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_LEFT):
+                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_a):
                         #global degrees
                         degrees += 1
                         if degrees > 149:
                                 degrees = 149
 
-                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_RIGHT):
+                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_d):
                         #global degrees
                         degrees -= 1
                         if degrees < -149:
@@ -117,10 +122,20 @@ def event_handler():
                                 FUELX += 2
                                 FUELPERCVALUE += 2
 
-                if (event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN and MenuItemNumber <= 6):
-                        MenuItemNumber += 1
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT):
+                        MenuNum += 1
+                        if(MenuNum > 2):
+                                MenuNum = 1
 
-                if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP and MenuItemNumber >= 1):
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT):
+                        MenuNum -= 1
+                        if(MenuNum < 1):
+                                MenuNum = 2
+
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN and MenuItemNumber < 6):
+                        MenuItemNumber += 1
+                        
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP and MenuItemNumber > 1):
                         MenuItemNumber -= 1                        
                                 
 def rotate_and_center(ds, x, y, image, degrees):
@@ -171,7 +186,7 @@ def text_format(message, textFont, textSize, textColor):
 direction = 1;
 raw_value = degrees * 0.8
 MenuStart_X = DW_HALF + 80
-MenuStart_Y = 260
+MenuStart_Y = 280
 Y_MenuSpace = 25
 
 ''' MAIN LOOP ------------------------------------------------------------------------------------ MAIN LOOP '''
@@ -187,6 +202,8 @@ while True:
         RECT = Gauge.get_rect()        
         DS.blit(Gauge, (DW_HALF - RECT.center[0] - 230, DH_HALF - RECT.center[1]))
         pygame.draw.rect(DS, WHITE, (DW_HALF + 190, 173, 110, 30), 1)
+        #pygame.draw.arc(DS, RED, [DW_HALF - 230, DH_HALF,20,20], degrees, 270) #(screen, color, (x,y,width,height), start_angle, stop_angle, thickness)
+        
         if(FUELPERCVALUE > 60):
                 FUELCOLOR = RICHGREEN
         elif(FUELPERCVALUE < 60):
@@ -195,7 +212,7 @@ while True:
                 else:
                         FUELCOLOR = RICHRED
         pygame.draw.rect(DS, FUELCOLOR, (DW_HALF + 195, 178, FUELX, 20), 0) 
-        pygame.draw.rect(DS, SILVER, (DW_HALF + 65, 235, 280, 220), 1)
+        pygame.draw.rect(DS, SILVER, (DW_HALF + 65, 235, 280, 210), 1)
 
         #Place all the fixed texts here
         display_text('RPM', DW_HALF+100, 50, 30)
@@ -214,72 +231,62 @@ while True:
         display_text(str(round(raw_value, 2)), DW_HALF+100, 100, 60)
         display_text("123456", DW_HALF+270, 100, 50)
 
+        ListItemColor1 = GRAY
+        ListItemColor2 = GRAY
+        ListItemColor3 = GRAY
+        ListItemColor4 = GRAY
+        ListItemColor5 = GRAY
+        ListItemColor6 = GRAY
+
         if(MenuItemNumber == 1):
                 ListItemColor1 = WHITE
-                ListItemColor2 = GRAY
-                ListItemColor3 = GRAY
-                ListItemColor4 = GRAY
-                ListItemColor5 = GRAY
-                ListItemColor6 = GRAY
 
         if(MenuItemNumber == 2):
-                ListItemColor1 = GRAY
                 ListItemColor2 = WHITE
-                ListItemColor3 = GRAY
-                ListItemColor4 = GRAY
-                ListItemColor5 = GRAY
-                ListItemColor6 = GRAY
 
         if(MenuItemNumber == 3):
-                ListItemColor1 = GRAY
-                ListItemColor2 = GRAY
                 ListItemColor3 = WHITE
-                ListItemColor4 = GRAY
-                ListItemColor5 = GRAY
-                ListItemColor6 = GRAY
 
         if(MenuItemNumber == 4):
-                ListItemColor1 = GRAY
-                ListItemColor2 = GRAY
-                ListItemColor3 = GRAY
                 ListItemColor4 = WHITE
-                ListItemColor5 = GRAY
-                ListItemColor6 = GRAY
 
         if(MenuItemNumber == 5):
-                ListItemColor1 = GRAY
-                ListItemColor2 = GRAY
-                ListItemColor3 = GRAY
-                ListItemColor4 = GRAY
                 ListItemColor5 = WHITE
-                ListItemColor6 = GRAY
 
         if(MenuItemNumber == 6):
-                ListItemColor1 = GRAY
-                ListItemColor2 = GRAY
-                ListItemColor3 = GRAY
-                ListItemColor4 = GRAY
-                ListItemColor5 = GRAY
                 ListItemColor6 = WHITE
-                        
 
-        display_text_NC("Menu item One", MenuStart_X, MenuStart_Y, 25, ListItemColor1)
-        display_text_NC("Menu item Two", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25, ListItemColor2)
-        display_text_NC("Menu item Three", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25, ListItemColor3)
-        display_text_NC("Menu item Four", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25, ListItemColor4)
-        display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25, ListItemColor5)
-        display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25, ListItemColor6)
+        if MenuNum <= 1:
+                pygame.draw.rect(DS, MENULISTCOLOR, (MenuStart_X - 14, MenuStart_Y + (Y_MenuSpace - 1)* (MenuItemNumber - 1), 278, 24), 0)
+                             
+                display_text_NC("< Settings >", MenuStart_X, MenuStart_Y - 40, 30, WHITE)
+
+                display_text_NC("Date and time", MenuStart_X, MenuStart_Y, 25, ListItemColor1)
+                display_text_NC("Notifications", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25, ListItemColor2)
+                display_text_NC("Calibration", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25, ListItemColor3)
+                display_text_NC("Connectivity", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25, ListItemColor4)
+                display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25, ListItemColor5)
+                display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25, ListItemColor6)
+                
+                pygame.display.update(DW_HALF + 65, 235, 280, 210)
+
+        if(MenuNum >= 2):
+                pygame.draw.rect(DS, MENULISTCOLOR, (MenuStart_X - 14, MenuStart_Y + (Y_MenuSpace - 1)* (MenuItemNumber - 1), 278, 24), 0)
+                     
+                display_text_NC("< Maintenance >", MenuStart_X, MenuStart_Y - 40, 30, WHITE)
+
+                display_text_NC("Battery", MenuStart_X, MenuStart_Y, 25, ListItemColor1)
+                display_text_NC("Starter battery", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25, ListItemColor2)
+                display_text_NC("Air filter", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25, ListItemColor3)
+                display_text_NC("Engine oil", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25, ListItemColor4)
+                display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25, ListItemColor5)
+                display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25, ListItemColor6)
+
+                pygame.display.update(DW_HALF + 65, 235, 280, 210)
 
         #The tick in the bracket will tell the maximum frames per second. Lower number means slower speed. Its not a delay func
         CLOCK.tick(60) 
 			
         pygame.display.update() #pygame.display.flip() is another option
         DS.fill([0,0,0])
-	
-	
-	
-	
-	
-	
-	
 	
