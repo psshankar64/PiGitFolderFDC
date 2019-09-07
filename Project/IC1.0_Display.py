@@ -5,12 +5,14 @@ This script loads an images and rotates it in the center of the display surface
 import sys
 import random
 import math
+import time
 
 import pygame
 import pygame.gfxdraw
 from pygame.locals import *
 
 #Define some standard colors
+BootUp = True
 FUCHSIA = (255, 0, 255)
 PURPLE = (128, 0, 128)
 TEAL = (0, 128, 128)
@@ -31,6 +33,16 @@ NAVY = (0, 0, 128)
 AQUA = (0, 255, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+MenuNum = 1
+MENULISTCOLOR = (64, 64, 64)
+
+
+ListItemColor1 = WHITE
+ListItemColor2 = GRAY
+ListItemColor3 = GRAY
+ListItemColor4 = GRAY
+ListItemColor5 = GRAY
+ListItemColor6 = GRAY
 
 '''Goabls We should not use it but for experiments we still keep this'''
 degrees = 149;
@@ -38,6 +50,9 @@ FUELX = 100;
 FUELCOLOR = GREEN;
 FUELPERCVALUE = 100;
 SELECTED = 1;
+MenuItemNumber = 1
+itemTextSize = 25
+itemSelectedSize = 35
 
 pygame.init()
 CLOCK = pygame.time.Clock() # *** NOT COVERED IN THE VIDEO ***
@@ -54,30 +69,44 @@ DS = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT), pygame.FULLSCREEN)
 Needle_org = pygame.image.load('./images/needle.png')
 Gauge_org = pygame.image.load('./images/CGaugeBlk.png')
 Circle_org = pygame.image.load('./images/circle2.jpg')
+StartUp_org = pygame.image.load('./images/logo.png')
 
 
 Gauge = pygame.transform.scale(Gauge_org, (640,460))
 Needle = pygame.transform.scale(Needle_org, (260,460))
 Circle = pygame.transform.scale(Circle_org, (340, 260))
+StartUp = pygame.transform.scale(StartUp_org, (640, 460))
+
 
 ''' FUNCTIONS ------------------------------------------------------------------------------------ FUNCTIONS '''
+
+def display_logo():
+        global BootUp
+        
+        DS.blit(StartUp, (150, 30))
+        pygame.display.update()
+        time.sleep(10)
+        BootUp = False        
+
 def event_handler():
         global degrees
         global FUELX
         global FUELPERCVALUE
+        global MenuNum
+        global MenuItemNumber
         
         for event in pygame.event.get():
                 if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                         pygame.quit()
                         sys.exit()
                         
-                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_LEFT):
+                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_a):
                         #global degrees
                         degrees += 1
                         if degrees > 149:
                                 degrees = 149
 
-                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_RIGHT):
+                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_d):
                         #global degrees
                         degrees -= 1
                         if degrees < -149:
@@ -92,6 +121,22 @@ def event_handler():
                         if(FUELX < 100):
                                 FUELX += 2
                                 FUELPERCVALUE += 2
+
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT):
+                        MenuNum += 1
+                        if(MenuNum > 2):
+                                MenuNum = 1
+
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT):
+                        MenuNum -= 1
+                        if(MenuNum < 1):
+                                MenuNum = 2
+
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN and MenuItemNumber < 6):
+                        MenuItemNumber += 1
+                        
+                if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP and MenuItemNumber > 1):
+                        MenuItemNumber -= 1                        
                                 
 def rotate_and_center(ds, x, y, image, degrees):
 # this function rotates an image and then centralises so that the rotation is uniform
@@ -122,23 +167,34 @@ def display_text(text, x_cord, y_cord, size):
         DS.blit(textSurf, textRect)
         return textSurf
 
-def display_text_NC(text, x_cord, y_cord, size):
+def display_text_NC(text, x_cord, y_cord, size, ListItemColor):
         texttype = pygame.font.Font('Light.ttf', size)
-        textSurf = texttype.render(text, 1, (255, 255, 255))
+        textSurf = texttype.render(text, 1, ListItemColor)
         textRect = textSurf.get_rect()
         textRect.topleft = (x_cord, y_cord)
-        DS.blit(textSurf, textRect)  
+        DS.blit(textSurf, textRect)
+
+# Text Renderer
+def text_format(message, textFont, textSize, textColor):
+    newFont=pygame.font.Font(textFont, textSize)
+    newText=newFont.render(message, 0, textColor)
+
+    return newText
 	
 ''' SETUP VARIABLES ------------------------------------------------------------------------------ SETUP VARIABLES '''
 # set the starting rotation of the image in degrees 
 direction = 1;
 raw_value = degrees * 0.8
 MenuStart_X = DW_HALF + 80
-MenuStart_Y = 260
+MenuStart_Y = 280
 Y_MenuSpace = 25
 
 ''' MAIN LOOP ------------------------------------------------------------------------------------ MAIN LOOP '''
 while True:
+
+        while BootUp is True:
+                display_logo()
+                                
         #Event handling currently handles ESC or any other keypress. This is a polling mechanism
         event_handler()
 
@@ -146,6 +202,8 @@ while True:
         RECT = Gauge.get_rect()        
         DS.blit(Gauge, (DW_HALF - RECT.center[0] - 230, DH_HALF - RECT.center[1]))
         pygame.draw.rect(DS, WHITE, (DW_HALF + 190, 173, 110, 30), 1)
+        #pygame.draw.arc(DS, RED, [DW_HALF - 230, DH_HALF,20,20], degrees, 270) #(screen, color, (x,y,width,height), start_angle, stop_angle, thickness)
+        
         if(FUELPERCVALUE > 60):
                 FUELCOLOR = RICHGREEN
         elif(FUELPERCVALUE < 60):
@@ -154,7 +212,7 @@ while True:
                 else:
                         FUELCOLOR = RICHRED
         pygame.draw.rect(DS, FUELCOLOR, (DW_HALF + 195, 178, FUELX, 20), 0) 
-        pygame.draw.rect(DS, SILVER, (DW_HALF + 65, 235, 280, 220), 1)
+        pygame.draw.rect(DS, SILVER, (DW_HALF + 65, 235, 280, 210), 1)
 
         #Place all the fixed texts here
         display_text('RPM', DW_HALF+100, 50, 30)
@@ -173,23 +231,62 @@ while True:
         display_text(str(round(raw_value, 2)), DW_HALF+100, 100, 60)
         display_text("123456", DW_HALF+270, 100, 50)
 
-        display_text_NC("Menu item One", MenuStart_X, MenuStart_Y, 25)
-        display_text_NC("Menu item Two", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25)
-        display_text_NC("Menu item Three", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25)
-        display_text_NC("Menu item Four", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25)
-        display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25)
-        display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25)
+        ListItemColor1 = GRAY
+        ListItemColor2 = GRAY
+        ListItemColor3 = GRAY
+        ListItemColor4 = GRAY
+        ListItemColor5 = GRAY
+        ListItemColor6 = GRAY
+
+        if(MenuItemNumber == 1):
+                ListItemColor1 = WHITE
+
+        if(MenuItemNumber == 2):
+                ListItemColor2 = WHITE
+
+        if(MenuItemNumber == 3):
+                ListItemColor3 = WHITE
+
+        if(MenuItemNumber == 4):
+                ListItemColor4 = WHITE
+
+        if(MenuItemNumber == 5):
+                ListItemColor5 = WHITE
+
+        if(MenuItemNumber == 6):
+                ListItemColor6 = WHITE
+
+        if MenuNum <= 1:
+                pygame.draw.rect(DS, MENULISTCOLOR, (MenuStart_X - 14, MenuStart_Y + (Y_MenuSpace - 1)* (MenuItemNumber - 1), 278, 24), 0)
+                             
+                display_text_NC("< Settings >", MenuStart_X, MenuStart_Y - 40, 30, WHITE)
+
+                display_text_NC("Date and time", MenuStart_X, MenuStart_Y, 25, ListItemColor1)
+                display_text_NC("Notifications", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25, ListItemColor2)
+                display_text_NC("Calibration", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25, ListItemColor3)
+                display_text_NC("Connectivity", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25, ListItemColor4)
+                display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25, ListItemColor5)
+                display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25, ListItemColor6)
+                
+                pygame.display.update(DW_HALF + 65, 235, 280, 210)
+
+        if(MenuNum >= 2):
+                pygame.draw.rect(DS, MENULISTCOLOR, (MenuStart_X - 14, MenuStart_Y + (Y_MenuSpace - 1)* (MenuItemNumber - 1), 278, 24), 0)
+                     
+                display_text_NC("< Maintenance >", MenuStart_X, MenuStart_Y - 40, 30, WHITE)
+
+                display_text_NC("Battery", MenuStart_X, MenuStart_Y, 25, ListItemColor1)
+                display_text_NC("Starter battery", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 1), 25, ListItemColor2)
+                display_text_NC("Air filter", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 2), 25, ListItemColor3)
+                display_text_NC("Engine oil", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 3), 25, ListItemColor4)
+                display_text_NC("Menu item Five", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 4), 25, ListItemColor5)
+                display_text_NC("Menu item Six", MenuStart_X, (MenuStart_Y + Y_MenuSpace * 5), 25, ListItemColor6)
+
+                pygame.display.update(DW_HALF + 65, 235, 280, 210)
 
         #The tick in the bracket will tell the maximum frames per second. Lower number means slower speed. Its not a delay func
         CLOCK.tick(60) 
 			
         pygame.display.update() #pygame.display.flip() is another option
         DS.fill([0,0,0])
-	
-	
-	
-	
-	
-	
-	
 	
