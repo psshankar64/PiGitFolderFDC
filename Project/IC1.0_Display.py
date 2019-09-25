@@ -70,12 +70,16 @@ Needle_org = pygame.image.load('./images/needle.png')
 Gauge_org = pygame.image.load('./images/CGaugeBlk.png')
 Circle_org = pygame.image.load('./images/circle2.jpg')
 StartUp_org = pygame.image.load('./images/logo.png')
+popupBg_org = pygame.image.load('./images/blackBg.png')
+popupIcon_org = pygame.image.load('./images/popupIcon.png')
 
 
 Gauge = pygame.transform.scale(Gauge_org, (640,460))
 Needle = pygame.transform.scale(Needle_org, (260,460))
 Circle = pygame.transform.scale(Circle_org, (340, 260))
 StartUp = pygame.transform.scale(StartUp_org, (640, 460))
+popupBg = pygame.transform.scale(popupBg_org, (240, 260))
+popupIcon = pygame.transform.scale(popupIcon_org, (50, 40))
 
 
 ''' FUNCTIONS ------------------------------------------------------------------------------------ FUNCTIONS '''
@@ -86,7 +90,17 @@ def display_logo():
         DS.blit(StartUp, (150, 30))
         pygame.display.update()
         time.sleep(10)
-        BootUp = False        
+        BootUp = False
+	
+def displayPopup():
+        mainDisplay()
+        DS.blit(popupBg, (380, 100))
+        display_text('Contact Workshop', DW_HALF+25, 150, 25)
+        display_text('Main beam problem', DW_HALF+25, 300, 25)
+        pygame.draw.rect(DS, WHITE, (380, 100, 240, 260), 2)
+        DS.blit(popupIcon, (470, 190))
+        pygame.display.update()
+        time.sleep(5)
 
 def event_handler():
         global degrees
@@ -136,7 +150,10 @@ def event_handler():
                         MenuItemNumber += 1
                         
                 if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP and MenuItemNumber > 1):
-                        MenuItemNumber -= 1                        
+                        MenuItemNumber -= 1
+			
+		if event.type==pygame.KEYDOWN and event.key==pygame.K_1:
+                        displayPopup()
                                 
 def rotate_and_center(ds, x, y, image, degrees):
 # this function rotates an image and then centralises so that the rotation is uniform
@@ -180,30 +197,15 @@ def text_format(message, textFont, textSize, textColor):
     newText=newFont.render(message, 0, textColor)
 
     return newText
-	
-''' SETUP VARIABLES ------------------------------------------------------------------------------ SETUP VARIABLES '''
-# set the starting rotation of the image in degrees 
-direction = 1;
-raw_value = degrees * 0.8
-MenuStart_X = DW_HALF + 80
-MenuStart_Y = 280
-Y_MenuSpace = 25
 
-''' MAIN LOOP ------------------------------------------------------------------------------------ MAIN LOOP '''
-while True:
-
-        while BootUp is True:
-                display_logo()
-                                
-        #Event handling currently handles ESC or any other keypress. This is a polling mechanism
-        event_handler()
-
-        #Place the Gauge first (and any other fixed shapes)
+def mainDisplay():
+     #Place the Gauge first (and any other fixed shapes)
         RECT = Gauge.get_rect()        
         DS.blit(Gauge, (DW_HALF - RECT.center[0] - 230, DH_HALF - RECT.center[1]))
         pygame.draw.rect(DS, WHITE, (DW_HALF + 190, 173, 110, 30), 1)
         #pygame.draw.arc(DS, RED, [DW_HALF - 230, DH_HALF,20,20], degrees, 270) #(screen, color, (x,y,width,height), start_angle, stop_angle, thickness)
         
+
         if(FUELPERCVALUE > 60):
                 FUELCOLOR = RICHGREEN
         elif(FUELPERCVALUE < 60):
@@ -285,7 +287,26 @@ while True:
                 pygame.display.update(DW_HALF + 65, 235, 280, 210)
 
         #The tick in the bracket will tell the maximum frames per second. Lower number means slower speed. Its not a delay func
-        CLOCK.tick(60) 
+        CLOCK.tick(60)
+	
+''' SETUP VARIABLES ------------------------------------------------------------------------------ SETUP VARIABLES '''
+# set the starting rotation of the image in degrees 
+direction = 1;
+raw_value = degrees * 0.8
+MenuStart_X = DW_HALF + 80
+MenuStart_Y = 280
+Y_MenuSpace = 25
+
+''' MAIN LOOP ------------------------------------------------------------------------------------ MAIN LOOP '''
+while True:
+
+        while BootUp is True:
+                display_logo()
+                                
+        #Event handling currently handles ESC or any other keypress. This is a polling mechanism
+        event_handler()
+
+        mainDisplay()
 			
         pygame.display.update() #pygame.display.flip() is another option
         DS.fill([0,0,0])
